@@ -1,0 +1,27 @@
+# Rust build output
+/target/
+**/*.rs.bk
+
+# Bimetal machine-local cache and compiled native extensions
+.bimetal/
+python/sa17/*.abi3.so
+python/sa17/*.pyd
+
+# Python environments and build output
+python/.venv/
+python/dist/
+python/build/
+python/.mypy_cache/
+python/.pytest_cache/
+.ruff_cache/
+**/__pycache__/
+*.pyc
+*.egg-info/
+
+# Local database files must never be committed
+*.db
+*.tlg
+*.log
+
+# OS files
+.DS_Store

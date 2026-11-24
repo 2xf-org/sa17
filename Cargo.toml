@@ -1,0 +1,41 @@
+[workspace]
+resolver = "3"
+members = [
+    "rust/sa17",
+    "rust/sa17-py",
+    "rust/sa17-synthetic",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.94"
+license = "MIT"
+repository = "https://github.com/2xf-org/sa17"
+authors = ["2xf.org"]
+
+[workspace.dependencies]
+sa17 = { path = "rust/sa17", version = "0.1.0" }
+sa17-synthetic = { path = "rust/sa17-synthetic" }
+
+bimetal = { version = "=202611.23.0", features = ["arrow"] }
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+crc32fast = "1.5"
+flate2 = "1.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0"
+
+[workspace.lints.rust]
+missing_docs = "warn"
+unreachable_pub = "warn"
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+missing_panics_doc = "warn"
+must_use_candidate = "warn"
+needless_for_each = "warn"
+ref_option = "warn"
+undocumented_unsafe_blocks = "warn"
+unwrap_used = "warn"
+wildcard_imports = "warn"

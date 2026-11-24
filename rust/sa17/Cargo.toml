@@ -1,0 +1,25 @@
+[package]
+name = "sa17"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+readme = "README.md"
+description = "Pure-Rust reader for SQL Anywhere 17 database files"
+keywords = ["database", "sql-anywhere", "sa17", "parser", "reader"]
+categories = ["database", "parser-implementations"]
+exclude = ["tests/"]
+
+[dependencies]
+chrono.workspace = true
+crc32fast.workspace = true
+flate2.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+sa17-synthetic.workspace = true
+
+[lints]
+workspace = true

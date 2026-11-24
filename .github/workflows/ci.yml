@@ -1,0 +1,131 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -Dwarnings
+  BIMETAL_VERSION: v202611.23.0
+
+jobs:
+  rust:
+    name: Rust (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@d5e4d57b030548f435d0befec15ff413a2c60eff # 1.100.0
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - name: Check formatting
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo fmt --all --check
+      - name: Clippy
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - name: Test workspace
+        run: cargo test --locked --workspace
+      - name: Check rustdoc
+        if: matrix.os == 'ubuntu-latest'
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --locked --no-deps -p sa17
+      - name: Verify crates.io package
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo package --locked -p sa17
+
+  python:
+    name: Python (${{ matrix.target }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            ext: tar.gz
+          - runner: macos-latest
+            target: aarch64-apple-darwin
+            ext: tar.gz
+          - runner: windows-latest
+            target: x86_64-pc-windows-msvc
+            ext: zip
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@d5e4d57b030548f435d0befec15ff413a2c60eff # 1.100.0
+      - uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d # v10.4.0
+        with:
+          python-version: "3.12"
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      - name: Install Bimetal CLI
+        env:
+          TARGET: ${{ matrix.target }}
+          EXT: ${{ matrix.ext }}
+        run: |
+          archive="bimetal-${BIMETAL_VERSION}-${TARGET}.${EXT}"
+          base="https://github.com/2xf-org/bimetal/releases/download/${BIMETAL_VERSION}"
+          mkdir -p "${RUNNER_TEMP}/bimetal"
+          curl -fsSL "${base}/${archive}" -o "${RUNNER_TEMP}/bimetal/${archive}"
+          curl -fsSL "${base}/SHA256SUMS" -o "${RUNNER_TEMP}/bimetal/SHA256SUMS"
+          cd "${RUNNER_TEMP}/bimetal"
+          if command -v sha256sum >/dev/null; then
+            grep "  ${archive}\$" SHA256SUMS | sha256sum -c -
+          else
+            grep "  ${archive}\$" SHA256SUMS | shasum -a 256 -c -
+          fi
+          if [ "${EXT}" = "zip" ]; then
+            7z x -y "${archive}" >/dev/null
+          else
+            tar -xzf "${archive}"
+          fi
+          echo "${RUNNER_TEMP}/bimetal/bimetal-${BIMETAL_VERSION}-${TARGET}" >> "${GITHUB_PATH}"
+      - name: Check generated bindings are in sync
+        run: bimetal check --config rust/sa17-py
+      - name: Build Python native extension
+        run: bimetal build --locked --config rust/sa17-py
+      - name: Sync Python test environment
+        run: uv --directory python sync --locked --group dev
+      - name: Run pytest
+        run: uv --directory python run pytest -v
+      - name: Type-check Python
+        if: matrix.runner == 'ubuntu-latest'
+        run: |
+          uv --directory python run mypy sa17 tests examples
+          uv --directory python run pyright sa17 tests examples
+      - name: Build wheel
+        run: uv --directory python build --wheel
+      - name: Repair Linux wheel for manylinux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends patchelf
+          uvx auditwheel repair --wheel-dir python/dist-repaired python/dist/*.whl
+          rm -rf python/dist
+          mv python/dist-repaired python/dist
+      - name: Smoke-test built wheel
+        run: |
+          wheel="$(ls python/dist/*.whl)"
+          uv run --no-project --with "${wheel}" python -c 'import sa17; print(sa17.Database, sa17.Table)'

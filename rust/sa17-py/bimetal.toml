@@ -1,0 +1,113 @@
+# Bimetal configuration. Edit the tables above [generated]; `bimetal build`
+# maintains [generated].
+
+[application]
+name = "sa17"
+namespaces = "folders"
+
+[python]
+package = "sa17"
+project = "../../python"
+
+[generated]
+# Fingerprint of the Rust/Cargo sources and the tables above.
+source_fingerprint = "1f21a3ba410fb31c8646eda42352ebc2"
+
+# Fingerprint of the published files; lets build and check no-op when current.
+output_fingerprint = "5af891ccf69c229dcaf3b2d541e92066"
+
+# Files that the WebAssembly build, or contract discovery without one, reads,
+# such as Rust sources and include_str! files, relative to the Cargo workspace.
+# source_fingerprint covers them.
+inputs = [
+    "rust/sa17-py/src/arrow_bridge.rs",
+    "rust/sa17-py/src/convert.rs",
+    "rust/sa17-py/src/lib.rs",
+    "rust/sa17/src/calendar.rs",
+    "rust/sa17/src/catalog.rs",
+    "rust/sa17/src/catalog/bootstrap.rs",
+    "rust/sa17/src/catalog/columns.rs",
+    "rust/sa17/src/catalog/fields.rs",
+    "rust/sa17/src/catalog/keys.rs",
+    "rust/sa17/src/catalog/problems.rs",
+    "rust/sa17/src/catalog/system_catalog.rs",
+    "rust/sa17/src/catalog/table_names.rs",
+    "rust/sa17/src/catalog/tables.rs",
+    "rust/sa17/src/catalog/users.rs",
+    "rust/sa17/src/cipher.rs",
+    "rust/sa17/src/cipher/key_search.rs",
+    "rust/sa17/src/cipher/page_key.rs",
+    "rust/sa17/src/cipher/store_key.rs",
+    "rust/sa17/src/database.rs",
+    "rust/sa17/src/decimal.rs",
+    "rust/sa17/src/error.rs",
+    "rust/sa17/src/format_version.rs",
+    "rust/sa17/src/from_value.rs",
+    "rust/sa17/src/identity.rs",
+    "rust/sa17/src/lib.rs",
+    "rust/sa17/src/open_options.rs",
+    "rust/sa17/src/page_size.rs",
+    "rust/sa17/src/record.rs",
+    "rust/sa17/src/record/column_index.rs",
+    "rust/sa17/src/record/columns.rs",
+    "rust/sa17/src/record/compression.rs",
+    "rust/sa17/src/record/descriptor.rs",
+    "rust/sa17/src/record/extension_pages.rs",
+    "rust/sa17/src/record/field.rs",
+    "rust/sa17/src/record/long_value.rs",
+    "rust/sa17/src/record/owned.rs",
+    "rust/sa17/src/record/plan.rs",
+    "rust/sa17/src/record/record_reader.rs",
+    "rust/sa17/src/record/row.rs",
+    "rust/sa17/src/record/row_addresses.rs",
+    "rust/sa17/src/record/rows.rs",
+    "rust/sa17/src/record/scanner.rs",
+    "rust/sa17/src/record/stored_field.rs",
+    "rust/sa17/src/row_address.rs",
+    "rust/sa17/src/row_id.rs",
+    "rust/sa17/src/row_key.rs",
+    "rust/sa17/src/schema.rs",
+    "rust/sa17/src/schema/column.rs",
+    "rust/sa17/src/schema/data_type.rs",
+    "rust/sa17/src/schema/foreign_key.rs",
+    "rust/sa17/src/schema/index.rs",
+    "rust/sa17/src/schema/length_unit.rs",
+    "rust/sa17/src/schema/page_set.rs",
+    "rust/sa17/src/schema/table_definition.rs",
+    "rust/sa17/src/source.rs",
+    "rust/sa17/src/store.rs",
+    "rust/sa17/src/store/key_choice.rs",
+    "rust/sa17/src/store/page.rs",
+    "rust/sa17/src/store/page_cache.rs",
+    "rust/sa17/src/store/page_list.rs",
+    "rust/sa17/src/store/page_store.rs",
+    "rust/sa17/src/store/record.rs",
+    "rust/sa17/src/store/row_page.rs",
+    "rust/sa17/src/store/stored_pages.rs",
+    "rust/sa17/src/store/superblock.rs",
+    "rust/sa17/src/store/text_encoding.rs",
+    "rust/sa17/src/table.rs",
+    "rust/sa17/src/value.rs",
+    "rust/sa17/src/verification.rs",
+    "rust/sa17/src/wide_product.rs",
+]
+
+[generated.python]
+# The project that Bimetal generated the files in, relative to bimetal.toml.
+project = "../../python"
+
+# Files owned by Bimetal and safe to overwrite or remove, relative to the project.
+files = [
+    "sa17/__init__.py",
+    "sa17/api.py",
+    "sa17/bimetal.py",
+    "sa17/models.py",
+    "sa17/native.pyi",
+    "sa17/py.typed",
+]
+
+# Packages that the generated code imports; pyproject.toml must depend on them.
+dependencies = [
+    "pydantic",
+    "pyarrow",
+]
