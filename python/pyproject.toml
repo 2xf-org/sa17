@@ -1,0 +1,62 @@
+[build-system]
+requires = ["pdm-backend>=2.4.9,<3"]
+build-backend = "pdm.backend"
+
+[project]
+name = "sa17"
+version = "202611.24.0"
+description = "Typed Python reader for SQL Anywhere 17 database files, with Apache Arrow export"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "2xf.org" }]
+requires-python = ">=3.11"
+keywords = ["database", "sql-anywhere", "sa17", "arrow", "parser"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Rust",
+    "Topic :: Database",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pyarrow>=16",
+    "pydantic>=2.7,<3",
+]
+
+[project.urls]
+Homepage = "https://github.com/2xf-org/sa17"
+Repository = "https://github.com/2xf-org/sa17"
+Issues = "https://github.com/2xf-org/sa17/issues"
+
+[tool.pdm.build]
+includes = ["sa17"]
+# The package ships a native extension, so wheels are platform-specific;
+# pdm_build.py tags them for the stable ABI and the extension's platform.
+is-purelib = false
+
+[dependency-groups]
+dev = [
+    "duckdb>=1.1",
+    "mypy>=1.15",
+    "polars>=1.2",
+    "pyarrow-stubs>=20.0.0.20260819",
+    "pyright>=1.1.400",
+    "pytest>=8.3",
+]
+
+[tool.pyright]
+typeCheckingMode = "strict"
+
+[tool.mypy]
+strict = true
+
+[tool.ruff.lint.isort]
+known-first-party = ["sa17"]

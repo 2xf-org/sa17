@@ -1,0 +1,21 @@
+[package]
+name = "sa17-py"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+publish = false
+description = "Python bindings for sa17, built with Bimetal"
+
+[dependencies]
+bimetal.workspace = true
+chrono.workspace = true
+sa17.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

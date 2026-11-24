@@ -1,0 +1,17 @@
+[package]
+name = "sa17-synthetic"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+publish = false
+description = "Writes small scrambled SQL Anywhere 17 database files for tests"
+
+[dependencies]
+crc32fast.workspace = true
+flate2.workspace = true
+
+[lints]
+workspace = true
