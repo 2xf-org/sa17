@@ -11,7 +11,7 @@ project = "../../python"
 
 [generated]
 # Fingerprint of the Rust/Cargo sources and the tables above.
-source_fingerprint = "56a6ae7aee5ae5211474d2204d804627"
+source_fingerprint = "7e9ea0cd271509d5dbea7fd4d8127b94"
 
 # Fingerprint of the published files; lets build and check no-op when current.
 output_fingerprint = "4ff24c1abd9c9845b4894140149f72df"
